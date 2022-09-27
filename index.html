@@ -1,0 +1,30 @@
+<?php
+    $serveur = "141.95.164.171";
+    $dbname = "phptest";
+    $user = "root";
+    $pass = "root";
+    
+    $user = $_POST["user"];
+    $pasword = $_POST["password"];
+
+    
+    try{
+        //On se connecte à la BDD
+        $dbco = new PDO("mysql:host=$serveur;dbname=$dbname",$user,$pass);
+        $dbco->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
+        //On insère les données reçues
+        $sth = $dbco->prepare("
+            INSERT INTO form(prenom, mail, age, sexe, pays)
+            VALUES(:prenom, :mail, :age, :sexe, :pays)");
+        $sth->bindParam(':user',$user);
+        $sth->bindParam(':password',$password);
+        $sth->execute();
+        
+        //On renvoie l'utilisateur vers la page de remerciement
+        header("Location:form-merci.html");
+    }
+    catch(PDOException $e){
+        echo 'Impossible de traiter les données. Erreur : '.$e->getMessage();
+    }
+?>
